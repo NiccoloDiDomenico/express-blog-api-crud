@@ -6,10 +6,16 @@ const postsList = require(`../data/posts.js`);
 
 // index
 const index = (req,res) => {
-    res.json({
-        data: postsList,
-        count: postsList.length
-    });
+    // inizialmente la lista di post filtrata corrisponde all'originale
+    let filteredPostList = postsList;
+    // se la richiesta contiene un filtro, filtriamo usando il metodo filter che ritorna un post tramite il metodo includes
+    if (req.query.tags) {
+        filteredPostList = postsList.filter((curPost) => {
+            return curPost.tags.includes(req.query.tags)
+        }); 
+    };
+    // restituisce la lista filtrata
+    res.json(filteredPostList)
 };
 
 // show
