@@ -38,3 +38,11 @@ const posts = [
 console.log(posts);
 
 module.exports = posts
+
+// post da usare per test postman sulle rotte
+// {
+//     "title": "Top 5 città europee da visitare",
+//     "content": "Scopri le città europee più affascinanti da visitare quest'anno, tra storia, arte e cultura. Da Parigi a Praga, ogni destinazione offre un'esperienza unica.",
+//     "image": "https://example.com/europa.jpg",
+//     "tags": ["viaggi", "città", "Europa", "cultura"]
+// }

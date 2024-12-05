@@ -8,12 +8,14 @@ const postsList = require(`../data/posts.js`);
 const index = (req,res) => {
     // inizialmente la lista di post filtrata corrisponde all'originale
     let filteredPostList = postsList;
+
     // se la richiesta contiene un filtro, filtriamo usando il metodo filter che ritorna un post tramite il metodo includes
     if (req.query.tags) {
         filteredPostList = postsList.filter((curPost) => {
             return curPost.tags.includes(req.query.tags)
         }); 
     };
+
     // restituisce la lista filtrata
     res.json(filteredPostList)
 };
@@ -21,9 +23,11 @@ const index = (req,res) => {
 // show
 const show = (req, res) => {
     // recupera l'id dall'URL e lo trasformo in numero
-    const postID = parseInt(req.params.id);
+    const postId = parseInt(req.params.id);
+
     // cerca il post tramite l'id
-    const post = postsList.find((curPost) => curPost.id === postID);
+    const post = postsList.find((curPost) => curPost.id === postId);
+
     // fa il controllo
     if (!post) {
         // imposta lo status 404
@@ -34,19 +38,68 @@ const show = (req, res) => {
             message: "Post non trovato"
         });
     };
+
     // restituisce id trovato
     res.json(post);
 };
 
 // store
 const store = (req,res) => {
-    res.send(`Qui creiamo un nuovo post`);
+    // console.log(req.body);
+
+    // crea un nuovo id incrementando l'ultimo id presente
+    const newId = postsList[postsList.length - 1].id + 1;
+
+    // crea un nuovo post
+    const newPost = {
+        id: newId,
+        ...req.body
+    }
+
+    // aggiunge il nuovo post alla lista 
+    postsList.push(newPost)
+
+    // debug
+    console.log(postsList);
+
+    // restituisce status e nuovo post
+    res.status(201);
+    res.json(newPost);
 };
 
 // updute
 const updute = (req, res) => {
-    const postId = req.params.id
-    res.send(`Qui modifichiamo interamente il post ${postId}`);
+    // console.log(req.body);
+    
+    // recupera l'id dall'URL e lo trasformo in numero
+    const postId = parseInt(req.params.id);
+
+    // cerca il post tramite l'id
+    let post = postsList.find((curPost) => curPost.id === postId);
+
+    // fa il controllo
+    if (!post) {
+        // imposta lo status 404
+        res.status(404);
+        // restituisce altre informazioni
+        res.json({
+            error: "Not found",
+            message: "Post non trovato"
+        });
+    };
+
+    // modifica il post
+    post.title = req.body.title;
+    post.content = req.body.content;
+    post.image = req.body.image;
+    post.tags = req.body.tags
+    // post = req.body;
+
+    // debug
+    console.log(postsList);
+    
+    // restituisce il post aggiornato
+    res.json(post);
 };
 
 // modify
@@ -58,9 +111,9 @@ const modify = (req, res) => {
 // destroy
 const destroy = (req, res) => {
     // recupera l'id dall'URL e lo trasformo in numero
-    const postID = parseInt(req.params.id);
+    const postId = parseInt(req.params.id);
     // cerca il post tramite l'id
-    const post = postsList.find((curPost) => curPost.id === postID);
+    const post = postsList.find((curPost) => curPost.id === postId);
     // fa il controllo
     if (!post) {
         // imposta lo status 404
