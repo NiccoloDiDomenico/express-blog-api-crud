@@ -3,7 +3,6 @@ const postsList = require(`../data/posts.js`);
 
 
 // Funcitions
-
 // index
 const index = (req,res) => {
     // inizialmente la lista di post filtrata corrisponde all'originale
@@ -27,17 +26,6 @@ const show = (req, res) => {
 
     // cerca il post tramite l'id
     const post = postsList.find((curPost) => curPost.id === postId);
-
-    // fa il controllo
-    if (!post) {
-        // imposta lo status 404
-        res.status(404);
-        // restituisce altre informazioni
-        res.json({
-            error: "Not found",
-            message: "Post non trovato"
-        });
-    };
 
     // restituisce id trovato
     res.json(post);
@@ -69,6 +57,7 @@ const store = (req,res) => {
 
 // updute
 const updute = (req, res) => {
+    // debug
     // console.log(req.body);
     
     // recupera l'id dall'URL e lo trasformo in numero
@@ -77,23 +66,12 @@ const updute = (req, res) => {
     // cerca il post tramite l'id
     let post = postsList.find((curPost) => curPost.id === postId);
 
-    // fa il controllo
-    if (!post) {
-        // imposta lo status 404
-        res.status(404);
-        // restituisce altre informazioni
-        res.json({
-            error: "Not found",
-            message: "Post non trovato"
-        });
-    };
-
     // modifica il post
     post.title = req.body.title;
     post.content = req.body.content;
     post.image = req.body.image;
-    post.tags = req.body.tags
-    // post = req.body;
+    post.tags = req.body.tags;
+    // post = {id: postId, ...req.body}; // modifica in una riga
 
     // debug
     console.log(postsList);
@@ -104,29 +82,41 @@ const updute = (req, res) => {
 
 // modify
 const modify = (req, res) => {
-    const postId = req.params.id
-    res.send(`Qui modifichiamo parzialmente il post ${postId}`);
+    // debug
+    // console.log(req.body);
+    
+    // recupera l'id dall'URL e lo trasformo in numero
+    const postId = parseInt(req.params.id);
+
+    // cerca il post tramite l'id
+    let post = postsList.find((curPost) => curPost.id === postId);
+
+    // modifica il post
+    post.title = req.body.title;
+    post.content = req.body.content;
+    post.image = req.body.image;
+    post.tags = req.body.tags;
+    // post = {id: postId, ...req.body}; // modifica in una riga
+
+    // debug
+    console.log(postsList);
+    
+    // restituisce il post aggiornato
+    res.json(post);
 };
 
 // destroy
 const destroy = (req, res) => {
     // recupera l'id dall'URL e lo trasformo in numero
     const postId = parseInt(req.params.id);
+
     // cerca il post tramite l'id
     const post = postsList.find((curPost) => curPost.id === postId);
-    // fa il controllo
-    if (!post) {
-        // imposta lo status 404
-        res.status(404);
-        // restituisce altre informazioni
-        res.json({
-            error: "Not found",
-            message: "Post non trovato"
-        });
-    };
+
     // rimuove il post con l'id trovato
     postsList.splice(postsList.indexOf(post), 1);
     console.log(postsList);
+
     // restituisce lo status corretto
     res.sendStatus(204);
 };

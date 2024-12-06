@@ -2,11 +2,12 @@ const express = require(`express`);
 const app = express();
 const port = 3000;
 const posts = require(`./data/posts.js`);
-const postsRouter = require(`./router/posts.js`)
+const postsRouter = require(`./router/posts.js`);
+const handleError = require(`./middlewares/handleError.js`);
 
 // registra il body-parser 
 app.use(express.json());
-// rende statica la cartella public
+// registra gli assets statici
 app.use(express.static(`public`));
 // indica a express che esistono nuove rotte
 app.use(`/posts`, postsRouter);
@@ -21,6 +22,9 @@ app.get("/bacheca", (req, res) => {
         count: posts.length
     });
 });
+
+// registra il middleware globale
+app.use(handleError);
 
 app.listen(port, () => {
     console.log(`Server in ascolto`); 
